@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Only For Saki 💖</title>
+
+    <style>
+      :root {
+        --c1: #ff9a9e;
+        --c2: #fecfef;
+        --c3: #fad0c4;
+        --accent: #ff4d6d;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Poppins, sans-serif;
+      }
+
+      body {
+        height: 100vh;
+        overflow: hidden;
+        background: linear-gradient(135deg, var(--c1), var(--c2), var(--c3));
+        color: white;
+      }
+
+      /* sections */
+      section {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        text-align: center;
+        padding: 20px;
+        transition: 1s;
+      }
+
+      .hidden {
+        opacity: 0;
+        transform: scale(0.9);
+        pointer-events: none;
+      }
+
+      /* card */
+      .card {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(18px);
+        border-radius: 25px;
+        padding: 40px;
+        max-width: 650px;
+      }
+
+      /* button */
+      button {
+        margin-top: 15px;
+        padding: 12px 28px;
+        border: none;
+        border-radius: 30px;
+        background: white;
+        color: var(--accent);
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      /* floating hearts */
+      .heart {
+        position: fixed;
+        bottom: -20px;
+        animation: floatUp linear forwards;
+      }
+
+      @keyframes floatUp {
+        to {
+          transform: translateY(-120vh);
+          opacity: 0;
+        }
+      }
+
+      /* countdown */
+      #timer {
+        font-size: 90px;
+        font-weight: bold;
+        animation: pulse 1s infinite;
+      }
+
+      @keyframes pulse {
+        50% {
+          transform: scale(1.2);
+        }
+      }
+
+      /* fireworks canvas */
+      canvas {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+      }
+
+      /* typing message */
+      #msg {
+        min-height: 110px;
+        line-height: 1.6;
+      }
+    </style>
+  </head>
+
+  <body>
+    <canvas id="fireworks"></canvas>
+
+    <!-- 🔒 PASSWORD -->
+    <section id="p0">
+      <div class="card">
+        <h1>🔒 Only Saki can enter</h1>
+        <input
+          id="pass"
+          placeholder="Password"
+          style="padding: 10px; border-radius: 8px; border: none"
+        />
+        <br />
+        <button onclick="checkPass()">Enter</button>
+      </div>
+    </section>
+
+    <!-- ⏳ COUNTDOWN -->
+    <section id="p1" class="hidden">
+      <h1>Preparing your surprise... ✨</h1>
+      <div id="timer">10</div>
+    </section>
+
+    <!-- READY -->
+    <section id="p2" class="hidden">
+      <div class="card">
+        <h1>Close your eyes & make a wish 💖</h1>
+        <button onclick="next(2, 3)">Ready</button>
+      </div>
+    </section>
+
+    <!-- 🎂 MAIN MESSAGE -->
+    <section id="p3" class="hidden">
+      <div class="card">
+        <h1>Happy Birthday Saki 🎂</h1>
+        <p id="msg"></p>
+        <button onclick="fireworks()">Celebrate 🎆</button>
+        <button onclick="next(3, 4)">Open Letter 💌</button>
+      </div>
+    </section>
+
+    <!-- 💌 LOVE LETTER (FINAL PAGE) -->
+    <section id="p4" class="hidden">
+      <div class="card">
+        <h1>💌 A Letter For You</h1>
+        <p>
+          Dear Saki,<br /><br />
+          Your smile lights up every moment and makes the world softer and
+          brighter. You deserve endless happiness, warm hugs, and dreams that
+          always come true.<br /><br />
+          May this birthday be the start of another beautiful year of your life.
+          Stay amazing, stay kind, stay you ❤️<br /><br />
+          Happy Birthday ✨
+        </p>
+        <button onclick="fireworks()">Celebrate Again 🎆</button>
+      </div>
+    </section>
+
+    <script>
+      const PASSWORD = "saki123";
+
+      /* hearts background */
+      setInterval(() => {
+        const h = document.createElement("div");
+        h.innerHTML = "💖";
+        h.className = "heart";
+        h.style.left = Math.random() * 100 + "vw";
+        h.style.fontSize = 12 + Math.random() * 20 + "px";
+        h.style.animationDuration = 5 + Math.random() * 4 + "s";
+        document.body.appendChild(h);
+        setTimeout(() => h.remove(), 9000);
+      }, 400);
+
+      /* page change */
+      function next(a, b) {
+        document.getElementById("p" + a).classList.add("hidden");
+        document.getElementById("p" + b).classList.remove("hidden");
+      }
+
+      /* password */
+      function checkPass() {
+        if (document.getElementById("pass").value === PASSWORD) {
+          next(0, 1);
+          startCountdown();
+        } else alert("Wrong password ❤️");
+      }
+
+      /* countdown */
+      function startCountdown() {
+        let time = 10;
+        const timer = document.getElementById("timer");
+
+        const interval = setInterval(() => {
+          time--;
+          timer.textContent = time;
+
+          if (time <= 0) {
+            clearInterval(interval);
+            next(1, 2);
+          }
+        }, 1000);
+      }
+
+      /* typing effect */
+      const text =
+        "You deserve every smile, every dream, and every beautiful moment. Happy Birthday Saki 💕";
+      let i = 0;
+
+      setInterval(() => {
+        if (i < text.length) {
+          document.getElementById("msg").textContent += text[i++];
+        }
+      }, 35);
+
+      /* fireworks */
+      const canvas = document.getElementById("fireworks");
+      const ctx = canvas.getContext("2d");
+      canvas.width = innerWidth;
+      canvas.height = innerHeight;
+
+      function fireworks() {
+        for (let i = 0; i < 60; i++) {
+          ctx.fillStyle = `hsl(${Math.random() * 360},100%,60%)`;
+          ctx.beginPath();
+          ctx.arc(
+            Math.random() * canvas.width,
+            (Math.random() * canvas.height) / 2,
+            4,
+            0,
+            6.28,
+          );
+          ctx.fill();
+        }
+      }
+    </script>
+  </body>
+</html>
